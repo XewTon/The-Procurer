@@ -699,10 +699,11 @@ export default function ProcurementToolkit() {
 
     setAgentMsgBuffer(msgs);
 
+    let hasPending = false;
     try {
       const resp = await runAgentStep(msgs);
       if (resp.toolCalls.length > 0) {
-        // 有待确认操作 → 暂停，展示操作卡片
+        hasPending = true;
         setPendingActions(resp.toolCalls);
         setExecutedActions([]);
         const planMsg: AIMessage = {
@@ -714,18 +715,23 @@ export default function ProcurementToolkit() {
         persistAI([...updated, planMsg]);
         setAgentMsgBuffer([...msgs, { role: "assistant", content: resp.content || "", tool_calls: resp.toolCalls.map((tc) => ({ id: tc.id, type: "function" as const, function: { name: tc.name, arguments: JSON.stringify(tc.args) } })) }]);
       } else {
-        // 纯文本回复
         const aiMsg: AIMessage = { role: "assistant", content: resp.content || "(空)", time: Date.now() };
         persistAI([...updated, aiMsg]);
       }
     } catch {
       const errMsg: AIMessage = { role: "assistant", content: "请求失败，请检查网络或 API Key 配置。", time: Date.now() };
       persistAI([...updated, errMsg]);
-      setAiLoading(false);
+    } finally {
+      if (!hasPending) setAiLoading(false);
     }
   };
 
   const handleAskAI = () => startAgent(aiInput);
+  const stopAgent = () => {
+    setAiLoading(false);
+    setPendingActions([]);
+    setExecutedActions([]);
+  };
 
   const confirmAction = async (tc: ToolCall) => {
     const result = await executeTool(tc.name, tc.args);
@@ -761,8 +767,7 @@ export default function ProcurementToolkit() {
         time: Date.now(),
         actionResults: results,
       };
-      setAiMessages((prev) => [...prev, finalMsg]);
-      persistAI([...aiMessages, finalMsg]);
+      setAiMessages((prev) => { const next = [...prev, finalMsg]; localStorage.setItem("procure_ai_chat", JSON.stringify(next.map(({ actions, actionResults: _ar, ...r }) => r))); return next; });
       setPendingActions([]);
       setExecutedActions([]);
     } catch {
@@ -828,7 +833,7 @@ export default function ProcurementToolkit() {
         actionResults: results,
       };
       setAiMessages((prev) => [...prev, finalMsg]);
-      persistAI([...aiMessages, finalMsg]);
+      setAiMessages((prev) => { const next = [...prev, finalMsg]; localStorage.setItem("procure_ai_chat", JSON.stringify(next.map(({ actions, actionResults: _ar, ...r }) => r))); return next; });
       setPendingActions([]);
       setExecutedActions([]);
       setAiLoading(false);
@@ -1486,7 +1491,10 @@ export default function ProcurementToolkit() {
                 >
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-2 md:grid-cols-6">
-                      <Input placeholder="供应商" value={newQuote.supplier} onChange={(e) => setNewQuote({ ...newQuote, supplier: e.target.value })} />
+                      <select value={newQuote.supplier} onChange={(e) => setNewQuote({ ...newQuote, supplier: e.target.value })} className="rounded-md border border-stone-200 bg-white px-3 py-2 text-sm outline-none">
+  <option value="">选择供应商</option>
+  {suppliers.map((s) => (<option key={s.id} value={s.name}>{s.name}</option>))}
+</select>
                       <Input placeholder="采购项目" value={newQuote.item} onChange={(e) => setNewQuote({ ...newQuote, item: e.target.value })} />
                       <Input placeholder="报价(元)" type="number" value={newQuote.price} onChange={(e) => setNewQuote({ ...newQuote, price: e.target.value })} />
                       <Input placeholder="交付天数" type="number" value={newQuote.deliveryDays} onChange={(e) => setNewQuote({ ...newQuote, deliveryDays: e.target.value })} />
@@ -1933,9 +1941,14 @@ export default function ProcurementToolkit() {
                           {aiLoading && pendingActions.length === 0 && (
                             <div className="flex justify-start">
                               <div className="max-w-[80%] rounded-lg border border-amber-900/10 bg-white px-4 py-2.5 text-sm shadow-sm">
-                                <div className="flex items-center gap-2 text-stone-400">
-                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                                  思考中...
+                                <div className="flex items-center gap-3">
+                                  <div className="flex items-center gap-2 text-stone-400">
+                                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                    思考中...
+                                  </div>
+                                  <button className="rounded px-2 py-0.5 text-[10px] text-red-400 hover:bg-red-50" onClick={stopAgent}>
+                                    停止
+                                  </button>
                                 </div>
                               </div>
                             </div>
@@ -1954,14 +1967,20 @@ export default function ProcurementToolkit() {
                         className="flex-1"
                         disabled={pendingActions.length > 0}
                       />
-                      <Button
-                        onClick={handleAskAI}
-                        disabled={aiLoading || !aiInput.trim() || pendingActions.length > 0}
-                        className="gap-1.5 bg-stone-800 text-amber-100 hover:bg-stone-700"
-                      >
-                        {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                        发送
-                      </Button>
+                      {aiLoading ? (
+                        <Button onClick={stopAgent} className="gap-1.5 bg-red-600 text-white hover:bg-red-700">
+                          <XIcon className="h-4 w-4" /> 停止
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={handleAskAI}
+                          disabled={!aiInput.trim() || pendingActions.length > 0}
+                          className="gap-1.5 bg-stone-800 text-amber-100 hover:bg-stone-700"
+                        >
+                          <Sparkles className="h-4 w-4" />
+                          发送
+                        </Button>
+                      )}
                     </div>
                   </div>
 

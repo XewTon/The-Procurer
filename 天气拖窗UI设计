@@ -1,0 +1,263 @@
+# Weather Emotion Window UI Design Prompt
+
+Design a premium floating weather cognition window for a philosophical knowledge system called "Philosophy OS".
+
+The component is not a normal weather widget.
+It is an "Environmental Cognition Interface" that connects real-world weather conditions with philosophical atmosphere.
+
+## Design Style
+
+Style:
+- Minimalist philosophical interface
+- Modern museum archive aesthetic
+- macOS floating window feeling
+- Obsidian knowledge system atmosphere
+- High-end academic software UI
+- Calm, intellectual, immersive
+
+Avoid:
+- colorful mobile weather app style
+- cartoon icons
+- excessive gradients
+- futuristic cyberpunk style
+- AI-generated glossy UI
+
+---
+
+# Layout
+
+Create a draggable floating window.
+
+Position:
+- top-right corner
+- floating above the main interface
+- can be collapsed into a small weather orb
+- expandable into detailed panel
+
+Window shape:
+
+- rounded rectangle
+- subtle glassmorphism
+- thin border
+- soft shadow
+- semi-transparent background
+- elegant spacing
+
+Size:
+
+Collapsed:
+120 × 120 px
+
+Expanded:
+360 × 460 px
+
+
+---
+
+# Header Section
+
+Top area:
+
+Display:
+
+Current location:
+"Tokyo"
+
+Current weather:
+"Rain"
+
+Temperature:
+18°C
+
+
+Include:
+
+- small weather symbol
+- local time
+- date
+
+Typography:
+
+- elegant serif title
+- clean sans-serif information text
+
+---
+
+# Main Weather Visualization
+
+Center area:
+
+Create a dynamic atmospheric scene.
+
+Examples:
+
+Sunny:
+- warm light particles
+- golden dust
+- slow floating animation
+
+Rain:
+- transparent rain particles
+- blue-gray atmosphere
+- subtle window reflection
+
+Storm:
+- dark clouds
+- occasional lightning glow
+- dramatic contrast
+
+Fog:
+- blurred background
+- soft moving mist
+- low visibility feeling
+
+
+The weather should affect the entire Philosophy OS environment.
+
+---
+
+# Philosophical Mood Section
+
+Add a unique section:
+
+"Atmosphere"
+
+Example:
+
+Weather:
+Rain
+
+Philosophical Mood:
+Reflection
+
+Recommended Thought:
+
+"Phenomenology of existence"
+
+Recommended Philosopher:
+
+Heidegger
+
+
+Display as a small archive card.
+
+---
+
+# AI Interpretation Panel
+
+Add an AI-generated insight area.
+
+Example:
+
+"Today's cognitive environment"
+
+AI Output:
+
+"Rain encourages introspective thinking.
+Consider exploring questions about existence,
+memory and consciousness."
+
+
+Style:
+
+- small text
+- subtle highlight
+- academic research note feeling
+
+---
+
+# Interaction
+
+The window supports:
+
+1. Drag movement
+
+2. Expand / Collapse animation
+
+3. Weather transition animation
+
+4. Manual weather simulation mode
+
+Buttons:
+
+- Current Weather
+- Simulation
+- AI Interpretation
+- Settings
+
+
+---
+
+# Weather State Colors
+
+Do not hardcode bright colors.
+
+Use CSS variables:
+
+Sunny:
+--weather-bg
+--weather-light
+--weather-accent
+
+
+Rain:
+cool blue-gray palette
+
+
+Storm:
+dark charcoal + muted red
+
+
+Fog:
+soft gray + low contrast
+
+
+---
+
+# Advanced Features
+
+Include:
+
+## Weather Timeline
+
+Small history graph:
+
+Morning
+Afternoon
+Night
+
+Showing weather changes.
+
+
+## Environment Sync
+
+Weather affects:
+
+- background brightness
+- particle density
+- UI contrast
+- animation speed
+- philosophical recommendations
+
+
+---
+
+# Visual Reference
+
+Imagine:
+
+A philosopher's study window mixed with:
+
+- Obsidian graph view
+- Apple macOS widgets
+- museum archive interface
+- scientific observation equipment
+
+
+Final result:
+
+A calm, intelligent, immersive weather cognition window
+that makes the user feel:
+
+"I am not checking weather.
+I am observing the relationship between the external world and human thought."

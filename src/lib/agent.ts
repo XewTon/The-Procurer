@@ -202,13 +202,16 @@ export async function runAgentStep(
     if (!res.ok) return { content: `API 请求失败 (${res.status})，请稍后重试。`, toolCalls: [] };
 
     const data = await res.json();
+    console.log("[Agent] API 响应:", JSON.stringify(data).slice(0, 500));
     const msg = data?.choices?.[0]?.message;
     if (!msg) return { content: "AI 未返回有效结果，请重试。", toolCalls: [] };
 
     const content: string | null = msg.content || null;
+    console.log("[Agent] tool_calls 数量:", (msg.tool_calls ?? []).length, "content:", content?.slice(0, 100));
     const toolCalls: ToolCall[] = (msg.tool_calls ?? []).map((tc: { id: string; function: { name: string; arguments: string } }) => {
       let args: Record<string, unknown> = {};
       try { args = JSON.parse(tc.function.arguments || "{}"); } catch { /* keep empty */ }
+      console.log("[Agent] tool_call:", tc.function.name, args);
       return { id: tc.id, name: tc.function.name, args };
     });
 
